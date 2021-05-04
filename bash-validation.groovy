@@ -1,16 +1,13 @@
 import java.util.regex.Pattern
 
-String nodeName = 'node*'
+String nodeName = "${NODE}"
 node(nodeName) 
 {   
     stage("Git clone")
     {   
         sh 'echo "Executing..." '
-        withCredentials([sshUserPrivateKey(credentialsId: '${SSH_KEY}', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'user')])
-        {
-            
-            println ""
-        }
+        git branch: 'validation_bash', credentialsId: 'github-key', url: 'git@github.com:asxan/bash-validation.git'
+        println "Hello"
     }
     // stage ('Sending status')
     // { 
