@@ -8,8 +8,8 @@
 # 5. Which hour was the most amount of requests.
 # 6. Which search bots appealed to the web site.
 # The path to apache log file is inherited as an argument. 
-
 # Function for read the input file
+
 filename=$1
 
 function getIps
