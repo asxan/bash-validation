@@ -39,13 +39,13 @@ function requestByTime
 
 function searchBots
 {
-    awk -F '"' '{ print $6, $1;}' example.log | grep -i 'bot' | awk -F ' -' '{ print $1}' | uniq -c | sed 's/^\s*[0-9].//'> result_searchBots.txt
+    awk -F '"' '{ print $6, $1;}' "$1" | grep -i 'bot' | awk -F ' -' '{ print $1}' | uniq -c | sed 's/^\s*[0-9].//'> result_searchBots.txt
 }
 
 
 
 # Main function in the script
-function Main()
+function Main
 {   
     if [[ -e "$1" && -s "$1" && -f "$1" ]]
     then
