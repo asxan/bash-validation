@@ -14,32 +14,32 @@ filename=$1
 
 function getIps()
 {
-    awk '{ print $1;}' "$1" | sort -n | uniq -c | sort -n | tail -n 1 | column -t > result_ips.txt
+    awk '{ print $1;}' "$1" | sort -n | uniq -c | sort -n | tail -n 1 | column -t > ../output/result_ips.txt
 }
 
 function page()
 {
-    awk '{ print $7;}' "$1" | sort  | uniq -c | sort -n | tail -n 1 | column -t  > result_page.txt
+    awk '{ print $7;}' "$1" | sort  | uniq -c | sort -n | tail -n 1 | column -t  > ../output/result_page.txt
 }
 
 function numberOfRequstsByIp()
 {
-    awk '{ print $1;}' "$1" | sort -n | uniq -c | sort -n  | column -t | sort -nr > result_requstsbyIps.txt
+    awk '{ print $1;}' "$1" | sort -n | uniq -c | sort -n  | column -t | sort -nr > ../output/result_requstsbyIps.txt
 }
 
 function noneExistPages()
 {
-    awk '{ print $7" "$9 ;}' "$1"  | grep '404' | awk '{print $1}' | column -t | uniq -c | awk '{print $2}'   > result_noneExistPage.txt
+    awk '{ print $7" "$9 ;}' "$1"  | grep '404' | awk '{print $1}' | column -t | uniq -c | awk '{print $2}'   > ../output/result_noneExistPage.txt
 }
 
 function requestByTime()
 {
-    awk '{ print $4; }' "$1" | awk -F ':' '{print $2; }' | uniq -c | sort -nr | column -t | head -n 1 | awk '{print $2}'> result_requstByTime.txt
+    awk '{ print $4; }' "$1" | awk -F ':' '{print $2; }' | uniq -c | sort -nr | column -t | head -n 1 | awk '{print $2}'> ../output/result_requstByTime.txt
 }
 
 function searchBots()
 {
-    awk -F '"' '{ print $6, $1;}' "$1" | grep -i 'bot' | awk -F ' -' '{ print $1}' | uniq -c | sed 's/^\s*[0-9].//'> result_searchBots.txt
+    awk -F '"' '{ print $6, $1;}' "$1" | grep -i 'bot' | awk -F ' -' '{ print $1}' | uniq -c | sed 's/^\s*[0-9].//'> ../output/result_searchBots.txt
 }
 
 
