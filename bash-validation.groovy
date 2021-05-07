@@ -1,5 +1,37 @@
 import java.util.regex.Pattern
 
+def mail_notification()
+{
+    mail to: "${toRecipient}",
+        cc: "${ccRecipient}",
+        subject: "${sSubject}",
+        mimeType: "text/html",
+            body: """
+            <head>
+            <style type="text/css"> .simplyText{ color: "red"; font-size: 100%; } .bottomText{ font-size: 90%; font-style: "italic"} 
+                    #form {
+                        position: absolute;
+                        width: 14px; 
+                    }
+            </style>
+            </head>
+            <body>
+            <p>Dear student,</p>
+            <p>We have received you a mail notification about validation status of bash script .</p>
+            <pre>
+            </pre>
+            <p>EFS cost table:</p>              
+            <pre>
+            </pre>
+            <p>EFS table by namespaces:</p>
+            <p>Best regards,</p>
+            <p>EDP Support Team</p>
+            <p class="bottomText">This is an automatically generated email – please do not reply to it. If you have any questions, please email SupportEPMD-EDP@epam.com.</p>
+            </body>
+            """
+}
+
+
 String nodeName = "${NODE}"
 node(nodeName) 
 {   try
@@ -18,7 +50,13 @@ node(nodeName)
                 script
                 {
                     git branch: 'master', url: "${HTTPS_CLONE_STUDENT_REPO}"
-                    sh 'ls -la'
+                }
+            }
+            dir('python_script')
+            {
+                script
+                {
+                    git branch: 'python_script', credentialsId: 'github-key', url: 'git@github.com:asxan/bash-validation.git'
                 }
             }
         }
@@ -29,7 +67,30 @@ node(nodeName)
                 dir("gold_solution")
                 {
                     sh( script: 'bash ./scripts/first_task.sh input_data/example.log',  returnStdout: true ).trim()
-                } 
+                    sh "ls -la output"
+                    sh 'pwd'
+                }
+                dir("student_solution")
+                {
+                    sh 'mkdir output'
+                    sh(script: """bash ./scripts/first_task.sh input_data/example.log""", returnStdout: true).trim()
+                    sh "ls -la output"
+                    sh 'pwd'
+                }
+                dir("python_script")
+                {
+                    script
+                    {
+                        sh 'ls -la'
+                        sh '''#!/bin/bash
+                            virtualenv venv
+                            source venv/bin/activate
+                            pip3 install -r requirements.txt
+                            pip3 freeze
+                            python -m xmlrunner -o junit-reports testFirstTask.py
+                        '''
+                    }
+                }
             }
         }
         stage ('Sending status')
