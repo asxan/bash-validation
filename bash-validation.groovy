@@ -12,7 +12,7 @@ def mail_datas(String toRecipient, String ccRecipient, String project_name)
     return final_list
 }
 
-def mail_notification(String toRecipient, String ccRecipient, String sSubject)
+def mail_notification(String toRecipient, String ccRecipient, String sSubject, String message)
 {
     mail to: "${toRecipient}",
         cc: "${ccRecipient}",
@@ -29,16 +29,18 @@ def mail_notification(String toRecipient, String ccRecipient, String sSubject)
             </head>
             <body>
             <p>Dear student,</p>
-            <p>We have received you a mail notification about validation status of bash script .</p>
+            <p>We have sent you a mail notification about validation status of bash scripts.</p>
             <pre>
             </pre>
-            <p>EFS cost table:</p>              
+            <p>Json format of result your scripts:</p>              
             <pre>
             </pre>
-            <p>EFS table by namespaces:</p>
+            <p>"""+ message +"""</p>
+            <pre>
+            </pre>
             <p>Best regards,</p>
-            <p>EDP Support Team</p>
-            <p class="bottomText">This is an automatically generated email – please do not reply to it. If you have any questions, please email SupportEPMD-EDP@epam.com.</p>
+            <p>Support command of bash validation service</p>
+            <p class="bottomText">This is an automatically generated email – please do not reply to it.</p>
             </body>
             """
 }
@@ -128,8 +130,8 @@ node(nodeName)
                 String sSubject = "[${PROJECT_NAME}] [EFS cost status] [${date.format("yyyy-MM-dd HH:mm:ss")} UTC]"
                 message = sh( script: 'cat python_script/*.json',  returnStdout: true ).trim()
                 println "${message}"
-                sh """ echo "Mail to ${toRecipient} ${ccRecipient}" """    
-                mail_notification(toRecipient, ccRecipient, sSubject)
+                sh ' echo "Mail to ${toRecipient} ${ccRecipient}" ' 
+                mail_notification(toRecipient, ccRecipient, sSubject, message)
             } 
         }
         stage('Clear workdir')
@@ -148,13 +150,14 @@ node(nodeName)
     {
         script{
             def date = new Date()
-                println("$date")
-                String toRecipient = "${EMAIL_ADDRESS}"
-                String ccRecipient = ""
-                String sSubject = "[${PROJECT_NAME}] [EFS cost status] [${date.format("yyyy-MM-dd HH:mm:ss")} UTC]"
-                sh ' echo "Mail to ${toRecipient} ${ccRecipient}" '
-                sh 'cat python_script/*.json'     
-                mail_notification(toRecipient, ccRecipient, sSubject)
+            println("$date")
+            String toRecipient = "${EMAIL_ADDRESS}"
+            String ccRecipient = ""
+            String sSubject = "[${PROJECT_NAME}] [EFS cost status] [${date.format("yyyy-MM-dd HH:mm:ss")} UTC]"
+            message = sh( script: 'cat python_script/*.json',  returnStdout: true ).trim()
+            println "${message}"
+            sh ' echo "Mail to ${toRecipient} ${ccRecipient}" ' 
+            mail_notification(toRecipient, ccRecipient, sSubject, message)
             sh """
             rm -rf *
             rm -rf .git
