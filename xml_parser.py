@@ -22,8 +22,11 @@ def args_parser(argv):
 
 # Converts .xml to Dictionary
 def get_data_dict(xml_file: str):
-    with open(xml_file) as xml_file:
-        data_dict = xmltodict.parse(xml_file.read())
+    try:
+        with open(xml_file) as xml_file:
+            data_dict = xmltodict.parse(xml_file.read())
+    except:
+        print("xml file can't be read!")
     return data_dict
 
 
