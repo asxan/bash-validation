@@ -1,5 +1,6 @@
 import json
 import sys
+import argparse
 
 
 class ArgsWrongNumber(Exception):
@@ -17,6 +18,14 @@ def get_argument():
             return sys.argv
     except ArgsWrongNumber as error:
         print(error)
+
+
+def args_parser(argv):
+    parser = argparse.ArgumentParser(description='This script parse json output of parsing xml test result')
+    parser.add_argument('json_file_path', type=str, help='json_file')
+    args = parser.parse_args(argv[1:])
+
+    return args
 
 
 def read_json_file(json_file):
