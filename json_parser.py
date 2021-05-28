@@ -28,15 +28,9 @@ def get_argument():
 
 
 def args_parser(argv):
-    try:
-        if len(argv) != 2:
-            raise ArgsWrongNumber
-        else:
-            parser = argparse.ArgumentParser(description='This script parse json output of parsing xml test result')
-            parser.add_argument('json_file_path', type=str, help='json_file')
-            args = parser.parse_args(argv[1:])
-    except ArgsWrongNumber as error:
-        print(error)
+    parser = argparse.ArgumentParser(description='This script parse json output of parsing xml test result')
+    parser.add_argument('json_file_path', type=str, help='json_file')
+    args = parser.parse_args(argv[1:])
 
     return args
 
@@ -48,11 +42,13 @@ def read_json_file(json_file):
     except IOError:
         print("File can't be read!")
         sys.exit(1)
+
     return data
 
 
 def parse_json(data):
     pretty = json.dumps(data["taskResult"]["details"], indent=4, sort_keys=True).strip("[]").strip("\n").strip("{  }")
+
     return pretty
 
 
@@ -65,7 +61,7 @@ def write_json(parse_data):
 
 
 def main():
-    arguments = vars(args_parser(sys.argv))
+    arguments = vars(args_parser(get_argument()))
     if arguments['json_file_path']:
         if not os.path.exists(arguments['json_file_path']):
             raise FileAbsence
