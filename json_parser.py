@@ -20,8 +20,12 @@ def get_argument():
 
 
 def read_json_file(json_file):
-    with open(json_file, "r", encoding='utf-8') as file:
-        data = json.load(file)
+    try:
+        with open(json_file, "r", encoding='utf-8') as file:
+            data = json.load(file)
+    except IOError:
+        print("File that passed as an argument has not found")
+        sys.exit(1)
     return data
 
 
@@ -37,8 +41,7 @@ def write_json(parse_data):
 
 def main():
     arguments = get_argument()
-    data = read_json_file(arguments[1])
-    parse_data = parse_json(data)
+    parse_data = parse_json(read_json_file(arguments[1]))
     write_json(parse_data)
 
 
