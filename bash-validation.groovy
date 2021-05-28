@@ -12,6 +12,22 @@ def mail_datas(String toRecipient, String ccRecipient, String project_name)
     return final_list
 }
 
+
+def read_output_json_parse_file(String filePath)
+{
+    File file = new File(filePath)
+    def line, noOfLines = 0;
+    lines = "<p>"
+    file.withReader { reader ->
+        while ((line = reader.readLine()) != null) {
+            lines = lines + line + "\n"
+        }
+    }
+    lines = lines + "</p>"
+    return lines
+}
+
+
 def mail_notification(String toRecipient, String ccRecipient, String sSubject, String message)
 {
     mail to: "${toRecipient}",
@@ -113,7 +129,8 @@ node(nodeName)
                         pip3 install -r requirements.txt
                         pip3 freeze
                         python3 -m xmlrunner -o junit-reports testFirstTask.py
-                        python3 parser.py junit-reports/"$(ls -1 junit-reports)" 1_file.json
+                        python3 xml_parser.py junit-reports/"$(ls -1 junit-reports)" 1_file.json
+                        python3 json_parser.py *.json
                         ls -la
                     '''
                 }
@@ -128,7 +145,8 @@ node(nodeName)
                 String toRecipient = "${EMAIL_ADDRESS}"
                 String ccRecipient = ""
                 String sSubject = "[${PROJECT_NAME}] [EFS cost status] [${date.format("yyyy-MM-dd HH:mm:ss")} UTC]"
-                message = sh( script: 'cat python_script/*.json',  returnStdout: true ).trim()
+                //message = sh( script: 'cat python_script/result_json_parse.*',  returnStdout: true ).trim()
+                message = read_output_json_parse_file("python_script/result_json_parse.*")
                 println "${message}"
                 sh ' echo "Mail to ${toRecipient} ${ccRecipient}" ' 
                 mail_notification(toRecipient, ccRecipient, sSubject, message)
@@ -154,7 +172,7 @@ node(nodeName)
             String toRecipient = "${EMAIL_ADDRESS}"
             String ccRecipient = ""
             String sSubject = "[${PROJECT_NAME}] [EFS cost status] [${date.format("yyyy-MM-dd HH:mm:ss")} UTC]"
-            message = sh( script: 'cat python_script/*.json',  returnStdout: true ).trim()
+            message = sh( script: 'cat python_script/result_json_parse.*',  returnStdout: true ).trim()
             println "${message}"
             sh ' echo "Mail to ${toRecipient} ${ccRecipient}" ' 
             mail_notification(toRecipient, ccRecipient, sSubject, message)
