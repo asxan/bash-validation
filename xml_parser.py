@@ -25,8 +25,10 @@ def get_data_dict(xml_file: str):
     try:
         with open(xml_file) as xml_file:
             data_dict = xmltodict.parse(xml_file.read())
-    except:
+    except IOError:
         print("xml file can't be read!")
+        sys.exit(1)
+
     return data_dict
 
 
@@ -143,8 +145,12 @@ def total_result(static_analysing_res: dict):
 
 # Export to json file
 def export_to_json(filename: str, data_dict: dict):
-    with open(filename, "w") as json_file:
-        json_file.write(json.dumps(data_dict, indent=4))
+    try:
+        with open(filename, "w") as json_file:
+            json_file.write(json.dumps(data_dict, indent=4))
+    except IOError:
+        print("xml file can't be read!")
+        sys.exit(1)
 
 
 def main():
