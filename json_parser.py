@@ -4,7 +4,7 @@ import sys
 
 class ArgsWrongNumber(Exception):
     def __str__(self):
-        print("Wrong number of arguments")
+        print("Wrong number of arguments!")
         sys.exit(1)
 
 
@@ -24,7 +24,7 @@ def read_json_file(json_file):
         with open(json_file, "r", encoding='utf-8') as file:
             data = json.load(file)
     except IOError:
-        print("File that passed as an argument has not found")
+        print("File that passed as an argument has not found!")
         sys.exit(1)
     return data
 
@@ -35,8 +35,11 @@ def parse_json(data):
 
 
 def write_json(parse_data):
-    with open("./result_json_parse.txt", "w", encoding='utf-8') as file:
-        file.write(parse_data)
+    try:
+        with open("./result_json_parse.txt", "w", encoding='utf-8') as file:
+            file.write(parse_data)
+    except:
+        print("Unable to create file or rewrite on disk!")
 
 
 def main():
