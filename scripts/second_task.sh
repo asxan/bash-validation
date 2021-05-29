@@ -6,9 +6,10 @@
 
 function viewAllNames()
 {
-#    nmap -Sp
+    #nmap -Sp
     echo "All names"
-    nmap
+    ip a
+    #nmap
 }
 
 function openPorts()
