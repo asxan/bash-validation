@@ -6,10 +6,19 @@
 
 function viewAllNames()
 {
-    #nmap -Sp
-    echo "All names"
-    ip a
-    #nmap
+    #ip_addr="$(ip a | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*/[0-9]{2}'  | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v "127.*" | grep -Eo '([0-9]*\.){3}')"
+    #ip_addr="$(ip a | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*/[0-9]{2}'  | awk '{print $2;}' | grep -v "127.*" | grep -Eo '([0-9]*\.){3}')"
+    ip_addr="$(ip a | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*/[0-9]{2}'  | awk '{print $2;}' | grep -v "127.*" | grep -Eo '([0-9]*\.){3}')"
+    ip_a="${ip_addr}"
+    echo "$ip_a"
+    #nmap -sn  $ip_a | grep -E '([0-9]*\.){3}[0-9]*' | column -t | awk '{print $(NF-1),$NF}' 
+    #> output/second_allNames.txt 
+}
+
+function get_net_mask()
+{
+    ip_mask_cidr=
+    net_mask=$(ipcalc -p 1.1.1.1 $1 | sed -n 's/^PREFIX=\(.*\)/\/\1/p')
 }
 
 function openPorts()
