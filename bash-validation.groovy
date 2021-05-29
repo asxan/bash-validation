@@ -13,27 +13,13 @@ def mail_datas(String toRecipient, String ccRecipient, String project_name)
 }
 
 
-def read_output_json_parse_file(String filePath)
-{
-    File file = new File(filePath)
-    def line, noOfLines = 0;
-    lines = "<p>"
-    file.withReader { reader ->
-        while ((line = reader.readLine()) != null) {
-            lines = lines + line + "\n"
-        }
-    }
-    lines = lines + "</p>"
-    return lines
-}
-
-
 def parse_output_for_mail(String text)
 {   
-    println("*************************************************")
-    println("$text")
-    def lines = text.split(",")
-    println("*************************************************")
+    def lines = "" 
+    for (i in text.split(",")) 
+    {
+        lines = lines + "<p>" + "$i" + "</p>" 
+    }
     println("$lines")
     return text
 }
@@ -157,11 +143,10 @@ node(nodeName)
                 String ccRecipient = ""
                 String sSubject = "[${PROJECT_NAME}] [EFS cost status] [${date.format("yyyy-MM-dd HH:mm:ss")} UTC]"
                 message = sh( script: 'cat python_script/result_json_parse.*',  returnStdout: true ).trim()
-                sh '''cat python_script/result_json_parse.* | column -t'''
-                //message = read_output_json_parse_file("python_script/result_json_parse.*")
-                //parse_message = parse_output_for_mail(message)
+
+                parse_message = parse_output_for_mail(message)
                 sh ' echo "Mail to ${toRecipient} ${ccRecipient}" ' 
-                mail_notification(toRecipient, ccRecipient, sSubject, message)
+                mail_notification(toRecipient, ccRecipient, sSubject, parse_message)
             } 
         }
         stage('Clear workdir')
