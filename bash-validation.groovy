@@ -9,6 +9,7 @@ def mail_datas(String toRecipient, String ccRecipient, String project_name)
     final_list[0] = toRecipient
     final_list[1] = ccRecipient
     final_list[2] = "[${project_name}] [BASH Validation] [${date.format("yyyy-MM-dd HH:mm:ss")} UTC]"
+
     return final_list
 }
 
@@ -21,7 +22,8 @@ def parse_output_for_mail(String text)
         lines = lines + "<p>" + "$i" + "</p>" 
     }
     println("$lines")
-    return text
+
+    return lines
 }
 
 
@@ -170,9 +172,10 @@ node(nodeName)
             String ccRecipient = ""
             String sSubject = "[${PROJECT_NAME}] [EFS cost status] [${date.format("yyyy-MM-dd HH:mm:ss")} UTC]"
             message = sh( script: 'cat python_script/result_json_parse.*',  returnStdout: true ).trim()
-            println "${message}"
+
+            parse_message = parse_output_for_mail(message)
             sh ' echo "Mail to ${toRecipient} ${ccRecipient}" ' 
-            mail_notification(toRecipient, ccRecipient, sSubject, message)
+            mail_notification(toRecipient, ccRecipient, sSubject, parse_message)
             sh """
             rm -rf *
             rm -rf .git
