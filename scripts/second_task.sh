@@ -6,7 +6,9 @@
 
 function viewAllNames()
 {
-    nmap -Sp
+#    nmap -Sp
+    echo "All names"
+    nmap
 }
 
 function openPorts()
@@ -20,7 +22,7 @@ function Main()
     for i in "$@"
     do
     case $i in
-        --all=?*)
+        --all)
             viewAllNames
             shift
         ;;
