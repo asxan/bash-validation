@@ -71,8 +71,8 @@ def main():
     if arguments['json_file_path']:
         if not os.path.exists(arguments['json_file_path']):
             raise FileAbsence
-    json_filename = arguments['json_file_path']
-    parse_data = parse_json(read_json_file(json_filename))
+
+    parse_data = parse_json(read_json_file(arguments['json_file_path']))
     write_json(parse_data)
 
 
