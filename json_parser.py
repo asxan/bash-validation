@@ -47,9 +47,15 @@ def read_json_file(json_file):
 
 
 def parse_json(data):
-    pretty = json.dumps(data["taskResult"]["details"], indent=4, sort_keys=True).strip("[]").strip("\n").strip("{  }")
-
-    return pretty
+    pretty = json.dumps(data["taskResult"]["details"], indent=4, sort_keys=True).strip("[]").strip("\n").strip("{  }").\
+        split("\n")
+    new_line = ""
+    for line in pretty:
+        if line != "":
+            new_line = new_line + line.strip(" ")
+        else:
+            continue
+    return new_line
 
 
 def write_json(parse_data):
