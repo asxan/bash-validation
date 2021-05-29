@@ -19,7 +19,7 @@ def parse_output_for_mail(String text)
     def lines = "" 
     for (i in text.split(",")) 
     {
-        lines = lines + "<p>" + "$i" + "</p>" 
+        lines = lines + "<p>" + "$i" + "\n" +"</p>" 
     }
     println("$lines")
 
@@ -47,7 +47,7 @@ def mail_notification(String toRecipient, String ccRecipient, String sSubject, S
             <p>We have sent you a mail notification about validation status of bash scripts.</p>
             <pre>
             </pre>
-            <p>Json format of result your scripts:</p>              
+            <p>Json format of result your first scripts:</p>              
             <pre>
             </pre>
             <p>"""+ message +"""</p>
