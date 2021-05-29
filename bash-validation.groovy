@@ -28,6 +28,17 @@ def read_output_json_parse_file(String filePath)
 }
 
 
+def parse_output_for_mail(String text)
+{   
+    println("*************************************************")
+    println("$text")
+    def lines = text.split(",")
+    println("*************************************************")
+    println("$lines")
+    return text
+}
+
+
 def mail_notification(String toRecipient, String ccRecipient, String sSubject, String message)
 {
     mail to: "${toRecipient}",
@@ -145,9 +156,10 @@ node(nodeName)
                 String toRecipient = "${EMAIL_ADDRESS}"
                 String ccRecipient = ""
                 String sSubject = "[${PROJECT_NAME}] [EFS cost status] [${date.format("yyyy-MM-dd HH:mm:ss")} UTC]"
-                //message = sh( script: 'cat python_script/result_json_parse.*',  returnStdout: true ).trim()
-                message = read_output_json_parse_file("python_script/result_json_parse.*")
-                println "${message}"
+                message = sh( script: 'cat python_script/result_json_parse.*',  returnStdout: true ).trim()
+                sh '''cat python_script/result_json_parse.* | column -t'''
+                //message = read_output_json_parse_file("python_script/result_json_parse.*")
+                //parse_message = parse_output_for_mail(message)
                 sh ' echo "Mail to ${toRecipient} ${ccRecipient}" ' 
                 mail_notification(toRecipient, ccRecipient, sSubject, message)
             } 
