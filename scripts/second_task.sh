@@ -6,6 +6,7 @@
 
 # Global variables
 addresses=""
+ip_addr=""
 
 # Function for key --all
 function viewAllNames()
@@ -16,8 +17,10 @@ function viewAllNames()
 
 
 function openPorts()
-{
+{   
+    echo "$1" >> output/tcp_ports.txt
     nmap -sT "$1"  | grep "open" | column -t >> output/tcp_ports.txt
+    echo "" >> output/tcp_ports.txt
 }
 
 
