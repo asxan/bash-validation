@@ -59,7 +59,7 @@ def parse_json(data):
     return new_line
 
 
-def write_json(parse_data, file_path: str):
+def write_json(parse_data, file_path):
     try:
         with open(file_path, "w", encoding='utf-8') as file:
             file.write(parse_data)
@@ -71,9 +71,6 @@ def main():
     arguments = vars(args_parser(get_argument()))
     if arguments['json_file_path']:
         if not os.path.exists(arguments['json_file_path']):
-            raise FileAbsence
-    if arguments['result_output_path']:
-        if not os.path.exists(arguments['result_output_path']):
             raise FileAbsence
 
     parse_data = parse_json(read_json_file(arguments['json_file_path']))
