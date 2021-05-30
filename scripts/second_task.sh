@@ -1,29 +1,23 @@
 #!/bin/bash
 # Creat script which calls with next keys:
-# 1. When script is caled without parameters, output the line of keys and their description
-# 2. Key --all outputs all ip addresses and symbol names all of network nodes in the subnet
-# 3. Key --target=X.X.X.X output list of all open system TCP ports
+# 1. When script is caled without parameters,outputs the line of keys and their description
+# 2. Key --all outputs all ip addresses and symbol names of nodes in the subnet
+# 3. Key --target=X.X.X.X outputs list of all open system TCP ports
 
+# Global variables
+addresses=""
+
+# Function for key --all
 function viewAllNames()
 {
-    #ip_addr="$(ip a | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*/[0-9]{2}'  | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v "127.*" | grep -Eo '([0-9]*\.){3}')"
-    #ip_addr="$(ip a | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*/[0-9]{2}'  | awk '{print $2;}' | grep -v "127.*" | grep -Eo '([0-9]*\.){3}')"
-    ip_addr="$(ip a | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*/[0-9]{2}'  | awk '{print $2;}' | grep -v "127.*" | grep -Eo '([0-9]*\.){3}')"
-    ip_a="${ip_addr}"
-    echo "$ip_a"
-    #nmap -sn  $ip_a | grep -E '([0-9]*\.){3}[0-9]*' | column -t | awk '{print $(NF-1),$NF}' 
-    #> output/second_allNames.txt 
+    ip_addr="$(ip a | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*/[0-9]{2}'  | awk '{print $2;}' | grep -v "127.*" | sed 's/[[:digit:]]\{0,3\}\//*\//' )"
+    addresses=$(nmap -sn  $ip_addr | grep -E '([0-9]*\.){3}[0-9]*' | awk '{print $(NF-1),$NF}' | column -t | sed 's/(//' | sed 's/)//' | tee output/second_allNames.txt | awk '{print $2;}' > output/ip_addrs.txt )
 }
 
-function get_net_mask()
-{
-    ip_mask_cidr=
-    net_mask=$(ipcalc -p 1.1.1.1 $1 | sed -n 's/^PREFIX=\(.*\)/\/\1/p')
-}
 
 function openPorts()
 {
-    echo "$1"
+    nmap -sT "$1"  | grep "open" | column -t >> output/tcp_ports.txt
 }
 
 
@@ -41,7 +35,7 @@ function Main()
             shift
         ;;
         *)
-            echo "Argument such as this don't exist"
+            echo "Parameter like this or value which has been given as an argument don't exist"
         ;;
     esac
     done
