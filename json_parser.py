@@ -19,7 +19,7 @@ class FileAbsence(Exception):
 def get_argument():
     argv = sys.argv
     try:
-        if len(argv) != 2:
+        if len(argv) != 3:
             raise ArgsWrongNumber
         else:
             return sys.argv
@@ -30,12 +30,13 @@ def get_argument():
 def args_parser(argv):
     parser = argparse.ArgumentParser(description='This script parse json output of parsing xml test result')
     parser.add_argument('json_file_path', type=str, help='json_file')
+    parser.add_argument('result_output_path', type=str, help='txt_file')
     args = parser.parse_args(argv[1:])
 
     return args
 
 
-def read_json_file(json_file):
+def read_json_file(json_file: str):
     try:
         with open(json_file, "r", encoding='utf-8') as file:
             data = json.load(file)
@@ -58,9 +59,9 @@ def parse_json(data):
     return new_line
 
 
-def write_json(parse_data):
+def write_json(parse_data, file_path: str):
     try:
-        with open("./result_json_parse.txt", "w", encoding='utf-8') as file:
+        with open(file_path, "w", encoding='utf-8') as file:
             file.write(parse_data)
     except:
         print("Unable to create file or rewrite on disk!")
@@ -71,9 +72,13 @@ def main():
     if arguments['json_file_path']:
         if not os.path.exists(arguments['json_file_path']):
             raise FileAbsence
+    if arguments['result_output_path']:
+        if not os.path.exists(arguments['result_output_path']):
+            raise FileAbsence
 
     parse_data = parse_json(read_json_file(arguments['json_file_path']))
-    write_json(parse_data)
+    
+    write_json(parse_data, arguments['result_output_path'])
 
 
 if __name__ == '__main__':
