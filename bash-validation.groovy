@@ -109,30 +109,42 @@ node(nodeName)
                 dir("gold_solution")
                 {
                     sh( script: 'bash ./scripts/first_task.sh input_data/example.log',  returnStdout: true ).trim()
+                    sh( script: 'bash ./scripts/second_task.sh --all',  returnStdout: true ).trim()
+                    // sh(script: """
+                    // while read line; do
+                    // ./scripts/second_task.sh --target="$line"
+                    // done < output/ip_addrs.txt
+                    // """, returnStdout: true ).trim()
+                    sh(script: "./script/excute_second_script.sh script/second_script.sh output/ip_addrs.txt", returnStdout: true).trim()
+                    //sh(script: "./scripts/second_task.sh --target=10.0.0.4", returnStdout: true ).trim()
+
+                    //sh """while read line; do ./scripts/second_task.sh --target=$line; done < output/ip_addrs.txt"""
                     sh "ls -la output"
+                    sh "cat output/ip_addrs.txt"
+                    //sh "cat output/tcp_ports.txt"
                     sh 'pwd'
                 }
-                dir("student_solution")
-                {
-                    sh 'mkdir output'
-                    sh(script: """bash ./scripts/first_task.sh input_data/example.log""", returnStdout: true).trim()
-                    sh "ls -la output"
-                    sh 'pwd'
-                }
-                dir("python_script")
-                {
-                    sh 'ls -la'
-                    sh '''#!/bin/bash
-                        virtualenv venv
-                        source venv/bin/activate
-                        pip3 install -r requirements.txt
-                        pip3 freeze
-                        python3 -m xmlrunner -o junit-reports testFirstTask.py
-                        python3 xml_parser.py junit-reports/"$(ls -1 junit-reports)" 1_file.json
-                        python3 json_parser.py *.json
-                        ls -la
-                    '''
-                }
+                // dir("student_solution")
+                // {
+                //     sh 'mkdir output'
+                //     sh(script: """bash ./scripts/first_task.sh input_data/example.log""", returnStdout: true).trim()
+                //     sh "ls -la output"
+                //     sh 'pwd'
+                // }
+                // dir("python_script")
+                // {
+                //     sh 'ls -la'
+                //     sh '''#!/bin/bash
+                //         virtualenv venv
+                //         source venv/bin/activate
+                //         pip3 install -r requirements.txt
+                //         pip3 freeze
+                //         python3 -m xmlrunner -o junit-reports testFirstTask.py
+                //         python3 xml_parser.py junit-reports/"$(ls -1 junit-reports)" 1_file.json
+                //         python3 json_parser.py *.json
+                //         ls -la
+                //     '''
+                // }
             }
         }
         stage ('Sending status')
@@ -141,14 +153,14 @@ node(nodeName)
             {
                 def date = new Date()
                 println("$date")
-                String toRecipient = "${EMAIL_ADDRESS}"
-                String ccRecipient = ""
-                String sSubject = "[${PROJECT_NAME}] [EFS cost status] [${date.format("yyyy-MM-dd HH:mm:ss")} UTC]"
-                message = sh( script: 'cat python_script/result_json_parse.*',  returnStdout: true ).trim()
+                // String toRecipient = "${EMAIL_ADDRESS}"
+                // String ccRecipient = ""
+                // String sSubject = "[${PROJECT_NAME}] [EFS cost status] [${date.format("yyyy-MM-dd HH:mm:ss")} UTC]"
+                // message = sh( script: 'cat python_script/result_json_parse.*',  returnStdout: true ).trim()
 
-                parse_message = parse_output_for_mail(message)
-                sh ' echo "Mail to ${toRecipient} ${ccRecipient}" ' 
-                mail_notification(toRecipient, ccRecipient, sSubject, parse_message)
+                // parse_message = parse_output_for_mail(message)
+                // sh ' echo "Mail to ${toRecipient} ${ccRecipient}" ' 
+                // mail_notification(toRecipient, ccRecipient, sSubject, parse_message)
             } 
         }
         stage('Clear workdir')
@@ -168,14 +180,14 @@ node(nodeName)
         script{
             def date = new Date()
             println("$date")
-            String toRecipient = "${EMAIL_ADDRESS}"
-            String ccRecipient = ""
-            String sSubject = "[${PROJECT_NAME}] [EFS cost status] [${date.format("yyyy-MM-dd HH:mm:ss")} UTC]"
-            message = sh( script: 'cat python_script/result_json_parse.*',  returnStdout: true ).trim()
+            // String toRecipient = "${EMAIL_ADDRESS}"
+            // String ccRecipient = ""
+            // String sSubject = "[${PROJECT_NAME}] [EFS cost status] [${date.format("yyyy-MM-dd HH:mm:ss")} UTC]"
+            // message = sh( script: 'cat python_script/result_json_parse.*',  returnStdout: true ).trim()
 
-            parse_message = parse_output_for_mail(message)
-            sh ' echo "Mail to ${toRecipient} ${ccRecipient}" ' 
-            mail_notification(toRecipient, ccRecipient, sSubject, parse_message)
+            // parse_message = parse_output_for_mail(message)
+            // sh ' echo "Mail to ${toRecipient} ${ccRecipient}" ' 
+            // mail_notification(toRecipient, ccRecipient, sSubject, parse_message)
             sh """
             rm -rf *
             rm -rf .git
