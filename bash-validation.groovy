@@ -110,41 +110,33 @@ node(nodeName)
                 {
                     sh( script: 'bash ./scripts/first_task.sh input_data/example.log',  returnStdout: true ).trim()
                     sh( script: 'bash ./scripts/second_task.sh --all',  returnStdout: true ).trim()
-                    // sh(script: """
-                    // while read line; do
-                    // ./scripts/second_task.sh --target="$line"
-                    // done < output/ip_addrs.txt
-                    // """, returnStdout: true ).trim()
-                    sh(script: "./script/excute_second_script.sh script/second_script.sh output/ip_addrs.txt", returnStdout: true).trim()
-                    //sh(script: "./scripts/second_task.sh --target=10.0.0.4", returnStdout: true ).trim()
-
-                    //sh """while read line; do ./scripts/second_task.sh --target=$line; done < output/ip_addrs.txt"""
-                    sh "ls -la output"
-                    sh "cat output/ip_addrs.txt"
-                    //sh "cat output/tcp_ports.txt"
-                    sh 'pwd'
+                    sh(script: "bash ./scripts/excute_second_script.sh scripts/second_task.sh output/ip_addrs.txt", returnStdout: true).trim()
                 }
-                // dir("student_solution")
-                // {
-                //     sh 'mkdir output'
-                //     sh(script: """bash ./scripts/first_task.sh input_data/example.log""", returnStdout: true).trim()
-                //     sh "ls -la output"
-                //     sh 'pwd'
-                // }
-                // dir("python_script")
-                // {
-                //     sh 'ls -la'
-                //     sh '''#!/bin/bash
-                //         virtualenv venv
-                //         source venv/bin/activate
-                //         pip3 install -r requirements.txt
-                //         pip3 freeze
-                //         python3 -m xmlrunner -o junit-reports testFirstTask.py
-                //         python3 xml_parser.py junit-reports/"$(ls -1 junit-reports)" 1_file.json
-                //         python3 json_parser.py *.json
-                //         ls -la
-                //     '''
-                // }
+                dir("student_solution")
+                {
+                    sh(script: """bash ./scripts/first_task.sh input_data/example.log""", returnStdout: true).trim()
+                    sh( script: 'bash ./scripts/second_task.sh --all',  returnStdout: true ).trim()
+                    sh(script: "bash ./scripts/excute_second_script.sh scripts/second_task.sh output/ip_addrs.txt", returnStdout: true).trim()
+                }
+                dir("python_script")
+                {
+                    sh 'ls -la'
+                    sh '''#!/bin/bash
+                        virtualenv venv
+                        source venv/bin/activate
+                        pip3 install -r requirements.txt
+                        pip3 freeze
+                        python3 -m xmlrunner -o junit-reports testFirstTask.py
+                        python3 xml_parser.py junit-reports/"$(ls -1 junit-reports)" 1_file.json
+                        ls -la junit-reports
+                        rm -rf junit-reports/*
+                        python3 -m xmlrunner -o junit-reports testSecondTask.py
+                        python3 xml_parser.py junit-reports/"$(ls -1 junit-reports)" 2_file.json
+                        python3 json_parser.py 1_file.json 1_result.txt
+                        python3 json_parser.py 2_file.json 2_result.txt
+                        ls -la
+                    '''
+                }
             }
         }
         stage ('Sending status')
