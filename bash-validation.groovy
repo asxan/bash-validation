@@ -27,7 +27,7 @@ def parse_output_for_mail(String text)
 }
 
 
-def mail_notification(String toRecipient, String ccRecipient, String sSubject, String message)
+def mail_notification(String toRecipient, String ccRecipient, String sSubject, String message1, String message2, String message3)
 {
     mail to: "${toRecipient}",
         cc: "${ccRecipient}",
@@ -48,9 +48,15 @@ def mail_notification(String toRecipient, String ccRecipient, String sSubject, S
             <pre>
             </pre>
             <p>Json format of result your first scripts:</p>              
+            <p>"""+ message1 +"""</p>
             <pre>
             </pre>
-            <p>"""+ message +"""</p>
+            <p>Json format of result your second scripts:</p>              
+            <p>"""+ message2 +"""</p>
+            <pre>
+            </pre>
+            <p>Json format of result your third scripts:</p>              
+            <p>"""+ message3 +"""</p>
             <pre>
             </pre>
             <p>Best regards,</p>
@@ -145,14 +151,15 @@ node(nodeName)
             {
                 def date = new Date()
                 println("$date")
-                // String toRecipient = "${EMAIL_ADDRESS}"
-                // String ccRecipient = ""
-                // String sSubject = "[${PROJECT_NAME}] [EFS cost status] [${date.format("yyyy-MM-dd HH:mm:ss")} UTC]"
-                // message = sh( script: 'cat python_script/result_json_parse.*',  returnStdout: true ).trim()
-
-                // parse_message = parse_output_for_mail(message)
-                // sh ' echo "Mail to ${toRecipient} ${ccRecipient}" ' 
-                // mail_notification(toRecipient, ccRecipient, sSubject, parse_message)
+                String toRecipient = "${EMAIL_ADDRESS}"
+                String ccRecipient = ""
+                String sSubject = "[${PROJECT_NAME}] [EFS cost status] [${date.format("yyyy-MM-dd HH:mm:ss")} UTC]"
+                parse_message1 = parse_output_for_mail(sh( script: 'cat python_script/1_result.txt',  returnStdout: true ).trim())
+                parse_message2 = parse_output_for_mail(sh( script: 'cat python_script/2_result.txt',  returnStdout: true ).trim())
+                parse_message3 = ""
+                
+                sh 'echo "Mail to ${toRecipient} ${ccRecipient}"' 
+                mail_notification(toRecipient, ccRecipient, sSubject, parse_message1, parse_message2, parse_message3)
             } 
         }
         stage('Clear workdir')
@@ -172,14 +179,15 @@ node(nodeName)
         script{
             def date = new Date()
             println("$date")
-            // String toRecipient = "${EMAIL_ADDRESS}"
-            // String ccRecipient = ""
-            // String sSubject = "[${PROJECT_NAME}] [EFS cost status] [${date.format("yyyy-MM-dd HH:mm:ss")} UTC]"
-            // message = sh( script: 'cat python_script/result_json_parse.*',  returnStdout: true ).trim()
-
-            // parse_message = parse_output_for_mail(message)
-            // sh ' echo "Mail to ${toRecipient} ${ccRecipient}" ' 
-            // mail_notification(toRecipient, ccRecipient, sSubject, parse_message)
+            String toRecipient = "${EMAIL_ADDRESS}"
+            String ccRecipient = ""
+            String sSubject = "[${PROJECT_NAME}] [EFS cost status] [${date.format("yyyy-MM-dd HH:mm:ss")} UTC]"
+            parse_message1 = parse_output_for_mail(sh( script: 'cat python_script/1_result.txt',  returnStdout: true ).trim())
+            parse_message2 = parse_output_for_mail(sh( script: 'cat python_script/2_result.txt',  returnStdout: true ).trim())
+            parse_message3 = ""
+            
+            sh 'echo "Mail to ${toRecipient} ${ccRecipient}"' 
+            mail_notification(toRecipient, ccRecipient, sSubject, parse_message1, parse_message2, parse_message3)
             sh """
             rm -rf *
             rm -rf .git
