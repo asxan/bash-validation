@@ -14,21 +14,21 @@ import re
 class MyTestCase(unittest.TestCase):
 
     # Test 1 subtask in first script
-    def test_AllNames(self):
-        file = open('../gold_solution/output/second_allNames.txt', 'r')
+    def test_brforeDeleting(self):
+        file = open('../gold_solution/output/backup_script_log_1', 'r')
         expected_output = file.read()
         file.close()
-        file = open('../student_solution/output/second_allNames.txt', 'r')
+        file = open('../student_solution/output/backup_script_log_1', 'r')
         received_output = file.read()
         file.close()
         self.assertEqual(received_output, expected_output)
 
     # Test 2 subtask in first script
-    def test_tcp_ports(self):
-        file = open('../gold_solution/output/tcp_ports.txt', 'r')
+    def test_Deleting(self):
+        file = open('../gold_solution/output/backup_script_log_2', 'r')
         expected_output = file.read()
         file.close()
-        file = open('../student_solution/output/tcp_ports.txt', 'r')
+        file = open('../student_solution/output/backup_script_log_2', 'r')
         received_output = file.read()
         file.close()
         self.assertEqual(received_output, expected_output)
