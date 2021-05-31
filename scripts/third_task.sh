@@ -8,38 +8,33 @@
 #   and name of file.
 # Created by Vitalii Klymov
 
-
-
-
-
 function back_up_data()
-{
-    echo "123"
+{   
+    date +%d.%m.%Y%t%H:%M:%S >> output/backup_script_log
+    rsync --verbose --archive --human-readable --compress --delete "$1"  "$2" | head -n -3 | tail -n +2 >> output/backup_script_log
+    echo "" >> output/backup_script_log
+    echo "sdaddvsvzv" > /home/asxan/hlam/backup/hello.txt
 }
 
 function Main()
 {
-    if [[ "$#" -eq 0 ]]; then
+    if [[ "$#" -eq 2 ]]; then
     {
-        
-    }
-    elif [[ "$#" -eq 2 ]]; then
-    {
-        # find ~ -type d -iname $(basename "$1") 1> /dev/null
-        # code1=$(echo "$?")
-        # find ~ -type d -iname $(basename "$2") 1> /dev/null
-        # code2=$(echo "$?")
-        # if [[ "$code1" -ne 0 ]]; then
-
-        if [[ -d "$1"  &&  -d "$2" ]]; then 
+        if [[ -e "$1" && -d "$1" ]]; then 
         {
-            tar -zcf "$(basename $1).tgz" $1 > /dev/null 2>&1
-            cp -R "$(basename $1).tgz" "$2"
-            rm -rf "$(basename $1).tgz"
+            if [[ -e "$2" && -d "$2" ]]; then
+            {
+                back_up_data "$@"
+            }
+            else
+            {
+                echo "Directory at this path $2  does not exist!"
+            }
+            fi
         } 
         else
         {
-            echo "One of the dirs doesn't exist"
+            echo "Directory at this path $1  does not exist!"
         }
         fi
     }
