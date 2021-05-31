@@ -71,7 +71,7 @@ String nodeName = "${NODE}"
 node(nodeName) 
 {   try
     {
-        stage("Git clone") ///home/asxan_devops/jenkins
+        stage("Git clone")
         {   
             sh 'echo "Executing..." '
             dir("gold_solution")
@@ -117,12 +117,42 @@ node(nodeName)
                     sh( script: 'bash ./scripts/first_task.sh input_data/example.log',  returnStdout: true ).trim()
                     sh( script: 'bash ./scripts/second_task.sh --all',  returnStdout: true ).trim()
                     sh(script: "bash ./scripts/excute_second_script.sh scripts/second_task.sh output/ip_addrs.txt", returnStdout: true).trim()
+                    sh """
+                    mkdir data backup
+                    touch data/new_txt1.txt data/new_txt2.txt data/new_txt3.txt
+                    echo "Hellosfdsfsd" > data/new_txt2.txt
+                    """
+                    sh(script: "bash ./scripts/third_task.sh data/ backup/", returnStdout: true).trim()
+                    sh""" 
+                    rm -rf backup/*
+                    touch backup/hello.txt
+                    cp output/backup_script_log output/backup_script_log_1 """
+                    sh "> output/backup_script_log"
+                    sh """
+                    bash ./scripts/third_task.sh data/ backup/
+                    cp output/backup_script_log output/backup_script_log_2
+                    """
                 }
                 dir("student_solution")
                 {
                     sh(script: """bash ./scripts/first_task.sh input_data/example.log""", returnStdout: true).trim()
-                    sh( script: 'bash ./scripts/second_task.sh --all',  returnStdout: true ).trim()
+                    sh(script: 'bash ./scripts/second_task.sh --all',  returnStdout: true ).trim()
                     sh(script: "bash ./scripts/excute_second_script.sh scripts/second_task.sh output/ip_addrs.txt", returnStdout: true).trim()
+                    sh """
+                    mkdir data backup
+                    touch data/new_txt1.txt data/new_txt2.txt data/new_txt3.txt
+                    echo "Hellosfdsfsd" > data/new_txt2.txt
+                    """
+                    sh(script: "bash ./scripts/third_task.sh data/ backup/", returnStdout: true).trim()
+                    sh""" 
+                    rm -rf backup/*
+                    touch backup/hello.txt
+                    cp output/backup_script_log output/backup_script_log_1"""
+                    sh "> output/backup_script_log"
+                    sh """
+                    bash ./scripts/third_task.sh data/ backup/
+                    cp output/backup_script_log output/backup_script_log_2
+                    """
                 }
                 dir("python_script")
                 {
@@ -138,8 +168,13 @@ node(nodeName)
                         rm -rf junit-reports/*
                         python3 -m xmlrunner -o junit-reports testSecondTask.py
                         python3 xml_parser.py junit-reports/"$(ls -1 junit-reports)" 2_file.json
+                        ls -la junit-reports
+                        rm -rf junit-reports/*
+                        python3 -m xmlrunner -o junit-reports testThirdtask.py
+                        python3 xml_parser.py junit-reports/"$(ls -1 junit-reports)" 3_file.json
                         python3 json_parser.py 1_file.json 1_result.txt
                         python3 json_parser.py 2_file.json 2_result.txt
+                        python3 json_parser.py 3_file.json 3_result.txt
                         ls -la
                     '''
                 }
@@ -156,7 +191,7 @@ node(nodeName)
                 String sSubject = "[${PROJECT_NAME}] [EFS cost status] [${date.format("yyyy-MM-dd HH:mm:ss")} UTC]"
                 parse_message1 = parse_output_for_mail(sh( script: 'cat python_script/1_result.txt',  returnStdout: true ).trim())
                 parse_message2 = parse_output_for_mail(sh( script: 'cat python_script/2_result.txt',  returnStdout: true ).trim())
-                parse_message3 = ""
+                parse_message3 = parse_output_for_mail(sh( script: 'cat python_script/3_result.txt',  returnStdout: true ).trim())
                 
                 sh 'echo "Mail to ${toRecipient} ${ccRecipient}"' 
                 mail_notification(toRecipient, ccRecipient, sSubject, parse_message1, parse_message2, parse_message3)
@@ -184,7 +219,7 @@ node(nodeName)
             String sSubject = "[${PROJECT_NAME}] [EFS cost status] [${date.format("yyyy-MM-dd HH:mm:ss")} UTC]"
             parse_message1 = parse_output_for_mail(sh( script: 'cat python_script/1_result.txt',  returnStdout: true ).trim())
             parse_message2 = parse_output_for_mail(sh( script: 'cat python_script/2_result.txt',  returnStdout: true ).trim())
-            parse_message3 = ""
+            parse_message3 = parse_output_for_mail(sh( script: 'cat python_script/3_result.txt',  returnStdout: true ).trim())
             
             sh 'echo "Mail to ${toRecipient} ${ccRecipient}"' 
             mail_notification(toRecipient, ccRecipient, sSubject, parse_message1, parse_message2, parse_message3)
