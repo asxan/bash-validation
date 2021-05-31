@@ -13,7 +13,6 @@ function back_up_data()
     date +%d.%m.%Y%t%H:%M:%S >> output/backup_script_log
     rsync --verbose --archive --human-readable --compress --delete "$1"  "$2" | head -n -3 | tail -n +2 >> output/backup_script_log
     echo "" >> output/backup_script_log
-    echo "sdaddvsvzv" > /home/asxan/hlam/backup/hello.txt
 }
 
 function Main()
